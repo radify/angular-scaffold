@@ -1,9 +1,9 @@
 (function(window, angular, undefined) {
 'use strict';
 
-var module = angular.module('ngScaffold', ['ng', 'ngModel']);
+var module = angular.module('ur.scaffold', ['ng', 'ur.model']);
 
-module.factory('$scaffold', ['$model', '$pageData', function($model, $pageData) {
+module.factory('scaffold', ['model', 'pageData', function(model, pageData) {
 
 	var extend   = angular.extend,
 		copy     = angular.copy,
@@ -22,11 +22,12 @@ module.factory('$scaffold', ['$model', '$pageData', function($model, $pageData) 
 		};
 
 		options = extend(defaults, options || {});
-		options.lists = options.lists || $pageData.lists();
+		options.lists = options.lists || pageData.lists();
 
 		var _ = {
 			editing: null,
-			Model: isString(options.model) ? $model(options.model) : options.model,
+			edited: null,
+			Model: isString(options.model) ? model(options.model) : options.model,
 			lists: {}
 		};
 
@@ -53,22 +54,49 @@ module.factory('$scaffold', ['$model', '$pageData', function($model, $pageData) 
 			ui: extend(_.lists, {
 
 				add: function() {
-					$scope.items.add($scope.items["new"]);
-					var result = $scope.items["new"];
-					this.create();
+					var result = null;
+					var self = this;
+					$scope.items.add($scope.items["new"])
+						.success(function(){
+							result = $scope.items["new"];
+							self.create();
+						})
+						.success(options.save);
 					return result;
 				},
 
 				edit: function(index) {
+
+					function _restore() {
+						if (_.editing === null || _.editing === false) {
+							return;
+						}
+						$scope.items[_.editing] = _.Model.create(_.edited);
+						_.editing = _.edited = null;
+					}
+
+					function _save(index) {
+						if (index === null || index === false) {
+							return;
+						}
+						_.editing = index;
+						_.edited = copy($scope.items[_.editing]);
+					}
+
 					if (arguments.length === 0) {
-						$scope.items[_.editing].$save().success(options.save);
-						_.editing = null;
+						$scope.items[_.editing].$save()
+							.success(function(){_.editing = null;})
+							.success(options.save);
 						return;
 					}
-					_.editing = index;
+					_restore();
+					_save(index);
 				},
 
 				isEditing: function(index) {
+					if (arguments.length === 0) {
+						return _.editing;
+					}
 					return index === _.editing;
 				},
 
@@ -83,8 +111,8 @@ module.factory('$scaffold', ['$model', '$pageData', function($model, $pageData) 
 		});
 	};
 
-}]).factory('$pageData', ['$document', function($document) {
-	
+}]).factory('pageData', ['$document', function($document) {
+
 	var data = $document.get(0).pageData;
 	var _lists = {};
 
