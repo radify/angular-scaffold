@@ -99,24 +99,15 @@ describe("scaffold", function() {
 
 		describe('pagination', function() {
 
-			it("should GET the first page", function() {
+			it("should use the range request header", function() {
 				var s = scaffold("Dogs", {
 					paginate: true
 				});
 
-				http.expectGET("http://api/dogs?page=1").respond(mocks.all);
+				http.expectGET("http://api/dogs", null, {
+					'Range': "resources=0-9"
+				}).respond(mocks.all);
 				http.flush();
-			});
-
-			it("should merge the page and query", function() {
-				var s = scaffold("Dogs", {
-					paginate: true,
-					query: {
-						breed: 'boxer'
-					}
-				});
-
-				http.expectGET("http://api/dogs?breed=boxer&page=1").respond(mocks.boxers);
 			});
 
 			it("should return an array of pages", function() {
@@ -124,8 +115,9 @@ describe("scaffold", function() {
 					paginate: true
 				});
 
-				// @todo: discuss approaches to API yielding total pages
-				http.whenGET("http://api/dogs?page=1").respond(mocks.boxers);
+				http.whenGET("http://api/dogs").respond(mocks.boxers, {
+					'Content-Range': "resources 0-9/40"
+				});
 				http.flush();
 
 				expect(s.pages).toEqual([1, 2, 3, 4]);
@@ -136,26 +128,29 @@ describe("scaffold", function() {
 					paginate: true
 				});
 
-				http.whenGET("http://api/dogs?page=1").respond(mocks.boxers);
+				http.whenGET("http://api/dogs").respond(mocks.boxers);
 				http.flush();
 
 				s.page(4);
-				http.expectGET("http://api/dogs?page=4").respond(mocks.boxers);
+				http.expectGET("http://api/dogs", null, {
+					'Range': "resources=30-39"
+				}).respond(mocks.boxers);
 			});
 
 			it("should allow custom page sizes", function() {
 				var s = scaffold("Dogs", {
 					paginate: {
-						limit: 5
+						size: 5
 					}
 				});
 
-				http.expectGET("http://api/dogs?limit=5&page=1").respond(mocks.all);
+				http.expectGET("http://api/dogs", null, {
+					'Range': "resources=0-4"
+				}).respond(mocks.all);
 				http.flush();
 			});
 		});
 
-		// @todo: discuss user interaction promises
 		describe("create", function() {
 			var s;
 
