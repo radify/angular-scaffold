@@ -161,6 +161,8 @@ describe("scaffold", function() {
 
 			beforeEach(function() {
 				s = scaffold("Dogs");
+				http.whenGET("http://api/dogs").respond(mocks.all);
+				http.flush();
 			});
 
 			it("should return a deferred", function() {
@@ -188,6 +190,95 @@ describe("scaffold", function() {
 				expect(s.$ui.saving).toBe(true);
 
 				http.whenPOST("http://api/dogs", mocks.one).respond(mocks.one);
+				http.flush();
+
+				expect(s.$ui.saving).toBe(false);
+			});
+		});
+
+		// @todo: discuss approach to editing/deleting an item. Currently by index.
+		describe("edit", function() {
+			var s;
+
+			beforeEach(function() {
+				s = scaffold("Dogs");
+				http.whenGET("http://api/dogs").respond(mocks.all);
+				http.flush();
+			});
+
+			it("should return a deferred", function() {
+				var deferred = s.edit(0);
+
+				expect(angular.isFunction(deferred.resolve)).toBe(true);
+				expect(angular.isFunction(deferred.reject)).toBe(true);
+				expect(angular.isFunction(deferred.notify)).toBe(true);
+			});
+
+			it("should update the object when the deferred is resolved", function() {
+				var deferred = s.edit(0);
+
+				var data = angular.extend(angular.copy(mocks.one), {
+					name: "Digby"
+				});
+
+				deferred.resolve(data);
+
+				http.expectPATCH("http://api/dogs/1", data).respond(data);
+				http.flush();
+			});
+
+			it("should set the saving ui state", function() {
+				var data = angular.extend(angular.copy(mocks.one), {
+					name: "Digby"
+				});
+
+				expect(s.$ui.saving).toBe(false);
+
+				s.edit(0).resolve(data);
+
+				expect(s.$ui.saving).toBe(true);
+
+				http.whenPATCH("http://api/dogs/1", data).respond(data);
+				http.flush();
+
+				expect(s.$ui.saving).toBe(false);
+			});
+		});
+
+		describe("delete", function() {
+			var s;
+
+			beforeEach(function() {
+				s = scaffold("Dogs");
+				http.whenGET("http://api/dogs").respond(mocks.all);
+				http.flush();
+			});
+
+			it("should return a deferred", function() {
+				var deferred = s.delete(0);
+
+				expect(angular.isFunction(deferred.resolve)).toBe(true);
+				expect(angular.isFunction(deferred.reject)).toBe(true);
+				expect(angular.isFunction(deferred.notify)).toBe(true);
+			});
+
+			it("should delete the object when the deferred is resolved", function() {
+				var deferred = s.delete(0);
+
+				deferred.resolve();
+
+				http.expectDELETE("http://api/dogs/1").respond(204);
+				http.flush();
+			});
+
+			it("should set the saving ui state", function() {
+				expect(s.$ui.saving).toBe(false);
+
+				s.delete(0).resolve();
+
+				expect(s.$ui.saving).toBe(true);
+
+				http.whenDELETE("http://api/dogs/1").respond(204);
 				http.flush();
 
 				expect(s.$ui.saving).toBe(false);
