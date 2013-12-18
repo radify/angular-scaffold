@@ -85,6 +85,16 @@ describe("scaffold", function() {
 
 				expect(s.items).toEqual(mocks.boxers);
 			});
+
+			it("should set the loading ui state", function() {
+				var s = scaffold("Dogs");
+				expect(s.$ui.loading).toBe(true);
+
+				http.whenGET("http://api/dogs").respond(mocks.all);
+				http.flush();
+
+				expect(s.$ui.loading).toBe(false);
+			});
 		});
 
 		describe('pagination', function() {
@@ -142,6 +152,45 @@ describe("scaffold", function() {
 
 				http.expectGET("http://api/dogs?limit=5&page=1").respond(mocks.all);
 				http.flush();
+			});
+		});
+
+		// @todo: discuss user interaction promises
+		describe("create", function() {
+			var s;
+
+			beforeEach(function() {
+				s = scaffold("Dogs");
+			});
+
+			it("should return a deferred", function() {
+				var deferred = s.create();
+
+				expect(angular.isFunction(deferred.resolve)).toBe(true);
+				expect(angular.isFunction(deferred.reject)).toBe(true);
+				expect(angular.isFunction(deferred.notify)).toBe(true);
+			});
+
+			it("should create a new object when the deferred is resolved", function() {
+				var deferred = s.create();
+
+				deferred.resolve(mocks.one);
+
+				http.expectPOST("http://api/dogs", mocks.one).respond(mocks.one);
+				http.flush();
+			});
+
+			it("should set the saving ui state", function() {
+				expect(s.$ui.saving).toBe(false);
+
+				s.create().resolve(mocks.one);
+
+				expect(s.$ui.saving).toBe(true);
+
+				http.whenPOST("http://api/dogs", mocks.one).respond(mocks.one);
+				http.flush();
+
+				expect(s.$ui.saving).toBe(false);
 			});
 		});
 	});
