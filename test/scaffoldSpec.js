@@ -16,6 +16,11 @@ describe("scaffold", function() {
 		this.addMatchers({
 			toEqualData: function(expected) {
 				return angular.equals(this.actual, expected);
+			},
+			toBeDeferred: function() {
+				return angular.isFunction(this.actual.resolve) &&
+					angular.isFunction(this.actual.reject) &&
+					angular.isFunction(this.actual.notify);
 			}
 		});
 	});
@@ -186,34 +191,30 @@ describe("scaffold", function() {
 			});
 
 			it("should return a deferred", function() {
-				var deferred = s.create();
-
-				expect(angular.isFunction(deferred.resolve)).toBe(true);
-				expect(angular.isFunction(deferred.reject)).toBe(true);
-				expect(angular.isFunction(deferred.notify)).toBe(true);
+				expect(s.create()).toBeDeferred();
 			});
 
 			it("should create a new object when the deferred is resolved", function() {
-				var deferred = s.create();
-
-				deferred.resolve(mocks.one);
+				s.create().resolve(mocks.one);
 
 				http.expectPOST("http://api/dogs", mocks.one).respond(mocks.one);
 				http.flush();
 			});
 
-			it("should set the saving ui state", function() {
+			it("should set the saving ui state", inject(function($rootScope) {
+				http.whenPOST("http://api/dogs", mocks.one).respond(mocks.one);
+
 				expect(s.$ui.saving).toBe(false);
 
 				s.create().resolve(mocks.one);
+				$rootScope.$digest();
 
 				expect(s.$ui.saving).toBe(true);
 
-				http.whenPOST("http://api/dogs", mocks.one).respond(mocks.one);
 				http.flush();
 
 				expect(s.$ui.saving).toBe(false);
-			});
+			}));
 		});
 
 		// @todo: discuss approach to editing/deleting an item. Currently by index.

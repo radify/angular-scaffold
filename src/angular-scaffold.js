@@ -3,7 +3,7 @@
 
 angular.module('ur.scaffold', ['ur.model'])
 .provider('scaffold', function() {
-	var modelClass;
+	var modelClass, q;
 	var registry = {};
 
 	function ScaffoldClass(options) {
@@ -74,6 +74,14 @@ angular.module('ur.scaffold', ['ur.model'])
 				return config;
 			},
 
+			$init: function() {
+				if (modelClass && !angular.isObject(config.model)) {
+					config.model = modelClass(config.model);
+				}
+
+				return this.refresh();
+			},
+
 			model: function() {
 				return config.model;
 			},
@@ -93,7 +101,7 @@ angular.module('ur.scaffold', ['ur.model'])
 			refresh: function() {
 				this.$ui.loading = true;
 
-				var promise = this.model().all(config.query, paginateHeaders());
+				var promise = config.model.all(config.query, paginateHeaders());
 
 				promise.then(function(data) {
 					self.items = data;
@@ -105,13 +113,19 @@ angular.module('ur.scaffold', ['ur.model'])
 				return this;
 			},
 
-			$init: function() {
-				if (modelClass && !angular.isObject(config.model)) {
-					config.model = modelClass(config.model);
-				}
+			create: function() {
+				var deferred = q.defer();
 
-				return this.refresh();
-			},
+				deferred.promise.then(function(data) {
+					self.$ui.saving = true;
+
+					config.model.create(data).$save().then(function() {
+						self.$ui.saving = false;
+					});
+				});
+
+				return deferred;
+			}
 		});
 	}
 
@@ -137,8 +151,9 @@ angular.module('ur.scaffold', ['ur.model'])
 			return this;
 		},
 
-		$get: ['model', function(model) {
+		$get: ['$q', 'model', function($q, model) {
 			modelClass = model;
+			q = $q;
 
 			function ScaffoldClassFactory(name, options) {
 				if (!angular.isUndefined(options)) {
