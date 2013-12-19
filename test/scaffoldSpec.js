@@ -87,7 +87,7 @@ describe("scaffold", function() {
 				expect(s.items).toEqualData(mocks.boxers);
 			});
 
-			it("should apply a given query on refresh", function() {
+			it("should apply a given query", function() {
 				var s = scaffold("Dogs");
 
 				http.whenGET("http://api/dogs").respond(mocks.all);
@@ -95,7 +95,7 @@ describe("scaffold", function() {
 
 				expect(s.items).toEqualData(mocks.all);
 
-				s.query({ breed: "boxer" }).refresh();
+				s.query({ breed: "boxer" });
 
 				http.expectGET("http://api/dogs?breed=boxer").respond(mocks.boxers);
 				http.flush();
@@ -116,14 +116,20 @@ describe("scaffold", function() {
 
 		describe('pagination', function() {
 
+			var headerIncludes = function(name, value) {
+				return function(headers) {
+					return headers[name] && headers[name] == value;
+				};
+			};
+
 			it("should use the range request header", function() {
 				var s = scaffold("Dogs", {
 					paginate: true
 				});
 
-				http.expectGET("http://api/dogs", null, {
-					'Range': "resources=0-9"
-				}).respond(mocks.all);
+				http.expectGET("http://api/dogs", headerIncludes("Range", "resources=0-9"))
+					.respond(mocks.all);
+
 				http.flush();
 			});
 
@@ -149,9 +155,11 @@ describe("scaffold", function() {
 				http.flush();
 
 				s.page(4);
-				http.expectGET("http://api/dogs", null, {
-					'Range': "resources=30-39"
-				}).respond(mocks.boxers);
+
+				http.expectGET("http://api/dogs", headerIncludes('Range', "resources=30-39"))
+					.respond(mocks.all);
+
+				http.flush();
 			});
 
 			it("should allow custom page sizes", function() {
@@ -161,9 +169,9 @@ describe("scaffold", function() {
 					}
 				});
 
-				http.expectGET("http://api/dogs", null, {
-					'Range': "resources=0-4"
-				}).respond(mocks.all);
+				http.expectGET("http://api/dogs", headerIncludes('Range', "resources=0-4"))
+					.respond(mocks.all);
+
 				http.flush();
 			});
 		});

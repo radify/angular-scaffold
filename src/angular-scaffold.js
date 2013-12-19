@@ -7,13 +7,63 @@ angular.module('ur.scaffold', ['ur.model'])
 	var registry = {};
 
 	function ScaffoldClass(options) {
-		var config = angular.extend({}, {
-			model: options.model,
-			query: options.query || {}
-		});
-		var self = this;
+		var self = this,
+			config = angular.extend({}, {
+				model: options.model,
+				query: options.query || {},
+			}),
+			paginate = {
+				size: 10,
+				page: 1
+			};
+
+		if (angular.isObject(options.paginate)) {
+			config.paginate = angular.extend({}, paginate, options.paginate);
+		}
+
+		if (options.paginate === true) {
+			config.paginate = paginate;
+		}
+
+		function paginateHeaders() {
+			if (config.paginate) {
+				var size = config.paginate.size,
+					page = config.paginate.page,
+					first = size * (page - 1),
+					last  = (size * page) - 1;
+
+				return {
+					'Range': "resources=" + first + "-" + last
+				};
+			}
+
+			return null;
+		}
+
+		function getPages(headers) {
+			if(!headers['content-range']) {
+				return [];
+			}
+
+			var regex = /^resources \d+-\d+\/(\d+)$/,
+				matches = headers['content-range'].match(regex),
+
+				total = matches[1],
+
+				pages = Math.ceil(total / config.paginate.size),
+
+				result = [];
+
+			for (var i = 0; i < pages; i++) {
+				result.push(i + 1);
+			}
+
+			return result;
+		}
 
 		angular.extend(this, {
+
+			pages: [],
 
 			$ui: {
 				loading: false,
@@ -31,16 +81,25 @@ angular.module('ur.scaffold', ['ur.model'])
 			query: function(query) {
 				config.query = query;
 
-				return this;
+				return this.refresh();
+			},
+
+			page: function(page) {
+				config.paginate.page = page;
+
+				return this.refresh();
 			},
 
 			refresh: function() {
 				this.$ui.loading = true;
 
-				modelClass.load(this, {
-					items: this.model().all(config.query)
-				}).then(function() {
+				var promise = this.model().all(config.query, paginateHeaders());
+
+				promise.then(function(data) {
+					self.items = data;
 					self.$ui.loading = false;
+
+					self.pages = getPages(promise.$response.headers());
 				});
 
 				return this;
