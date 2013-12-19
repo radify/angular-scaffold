@@ -3,35 +3,50 @@ describe("scaffold", function() {
 
 	beforeEach(module("ur.scaffold.mocks"));
 
-	beforeEach(module("ur.scaffold", function(scaffoldProvder) {
-		provider = scaffoldProvder;
+	beforeEach(module("ur.scaffold", function(scaffoldProvider) {
+		provider = scaffoldProvider;
 	}));
 
-	beforeEach(module("ur.scaffold", function(modelProvider) {
+	beforeEach(module("ur.model", function(modelProvider) {
 		modelProvider
-			.model("Dogs", { url: "http://api/dogs" })
-			.model("Cats", { url: "http://api/cats" });
+			.model("Dogs", { url: "http://api/dogs" });
 	}));
+
+	beforeEach(function() {
+		this.addMatchers({
+			toEqualData: function(expected) {
+				return angular.equals(this.actual, expected);
+			}
+		});
+	});
 
 	describe("provider", function() {
 
 		describe("configuration", function() {
 
-			it("should accept scaffold definitions", function() {
+			it("should accept scaffold definitions", inject(function() {
 				expect(provider.scaffold("Dogs", {})).toBe(provider);
-			});
+			}));
 
-			it("should infer the model to use", inject(function(model) {
+			it("should infer the model to use", inject(function(model, scaffold) {
 				var dogs = model("Dogs");
+
 				provider.scaffold("Dogs", {});
 
 				expect(scaffold("Dogs").model()).toEqual(dogs);
 			}));
 
-			it("should use a given model", inject(function(model) {
+			it("should use a given model", inject(function(model, scaffold) {
 				var dogs = model("Dogs");
+
 				provider.scaffold("Canines", {
 					model: dogs
+				});
+
+				expect(scaffold("Canines").model()).toEqual(dogs);
+
+				provider.scaffold("Canines", {
+					model: "Dogs"
 				});
 
 				expect(scaffold("Canines").model()).toEqual(dogs);
@@ -40,11 +55,14 @@ describe("scaffold", function() {
 	});
 
 	describe("service", function() {
-		var http, mocks;
+		var http, mocks, scaffold;
 
-		beforeEach(inject(function($httpBackend, mocks) {
-			http = $httpBackend;
-			mocks = mocks;
+		beforeEach(inject(function($injector) {
+			http = $injector.get('$httpBackend');
+			mocks = $injector.get('mocks');
+			scaffold = $injector.get('scaffold');
+
+			provider.scaffold("Dogs", {});
 		}));
 
 		describe("fetch all", function() {
@@ -55,7 +73,7 @@ describe("scaffold", function() {
 				http.expectGET("http://api/dogs").respond(mocks.all);
 				http.flush();
 
-				expect(s.items).toEqual(mocks.all);
+				expect(s.items).toEqualData(mocks.all);
 			});
 
 			it("should GET and store with default query", function() {
@@ -66,7 +84,7 @@ describe("scaffold", function() {
 				http.expectGET("http://api/dogs?breed=boxer").respond(mocks.boxers);
 				http.flush();
 
-				expect(s.items).toEqual(mocks.boxers);
+				expect(s.items).toEqualData(mocks.boxers);
 			});
 
 			it("should apply a given query on refresh", function() {
@@ -75,15 +93,14 @@ describe("scaffold", function() {
 				http.whenGET("http://api/dogs").respond(mocks.all);
 				http.flush();
 
-				expect(s.items).toEqual(mocks.all);
+				expect(s.items).toEqualData(mocks.all);
 
-				s.query = { breed: "boxer" };
-				s.refresh();
+				s.query({ breed: "boxer" }).refresh();
 
 				http.expectGET("http://api/dogs?breed=boxer").respond(mocks.boxers);
 				http.flush();
 
-				expect(s.items).toEqual(mocks.boxers);
+				expect(s.items).toEqualData(mocks.boxers);
 			});
 
 			it("should set the loading ui state", function() {
