@@ -274,11 +274,7 @@ describe("scaffold", function() {
 			});
 
 			it("should return a deferred", function() {
-				var deferred = s.delete(0);
-
-				expect(angular.isFunction(deferred.resolve)).toBe(true);
-				expect(angular.isFunction(deferred.reject)).toBe(true);
-				expect(angular.isFunction(deferred.notify)).toBe(true);
+				expect(s.delete(0)).toBeDeferred();
 			});
 
 			it("should delete the object when the deferred is resolved", function() {
@@ -286,22 +282,24 @@ describe("scaffold", function() {
 
 				deferred.resolve();
 
-				http.expectDELETE("http://api/dogs/1").respond(204);
+				http.expectDELETE("http://api/dogs/jerry").respond(204);
 				http.flush();
 			});
 
-			it("should set the saving ui state", function() {
+			it("should set the saving ui state", inject(function($rootScope) {
+				http.whenDELETE("http://api/dogs/jerry").respond(204);
+
 				expect(s.$ui.saving).toBe(false);
 
 				s.delete(0).resolve();
+				$rootScope.$digest();
 
 				expect(s.$ui.saving).toBe(true);
 
-				http.whenDELETE("http://api/dogs/1").respond(204);
 				http.flush();
 
 				expect(s.$ui.saving).toBe(false);
-			});
+			}));
 		});
 	});
 });

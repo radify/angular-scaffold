@@ -142,6 +142,21 @@ angular.module('ur.scaffold', ['ur.model'])
 				});
 
 				return deferred;
+			},
+
+			delete: function(index) {
+				var deferred = q.defer(),
+					object = this.items[index];
+
+				deferred.promise.then(function(data) {
+					self.$ui.saving = true;
+
+					object.$delete().then(function() {
+						self.$ui.saving = false;
+					});
+				});
+
+				return deferred;
 			}
 		});
 	}
