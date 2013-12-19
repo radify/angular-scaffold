@@ -1,11 +1,32 @@
 angular.module('ur.scaffold.mocks', [])
 .value('mocks', {
 	all: [
-		{ name: "Jerry", breed: "jack russel" },
-		{ name: "Mac", breed: "boxer" }
+		{
+			$links: {
+				self: "http://api/dogs/jerry"
+			},
+			name: "Jerry",
+			breed: "jack russel"
+		},
+		{
+			$links: {
+				self: "http://api/dogs/mac"
+			},
+			name: "Mac",
+			breed: "boxer"
+		}
 	],
 	boxers: [
-		{ name: "Mac", breed: "boxer" }
+		{
+			$links: {
+				self: "http://api/dogs/mac"
+			},
+			name: "Mac",
+			breed: "boxer"
+		}
 	],
-	one: { name: "Jerry", breed: "jack russel" },
+	one: {
+		name: "Jerry",
+		breed: "jack russel"
+	}
 });
