@@ -119,42 +119,44 @@ angular.module('ur.scaffold', ['ur.model'])
 				deferred.promise.then(function(data) {
 					self.$ui.saving = true;
 
-					config.model.create(data).$save().then(function() {
+					deferred.$instance.$save().then(function() {
 						self.$ui.saving = false;
 					});
 				});
+
+				deferred.$instance = config.model.create();
 
 				return deferred;
 			},
 
 			edit: function(index) {
-				var deferred = q.defer(),
-					object = this.items[index];
+				var deferred = q.defer();
 
 				deferred.promise.then(function(data) {
 					self.$ui.saving = true;
 
-					angular.extend(object, data);
-
-					object.$save().then(function() {
+					deferred.$instance.$save().then(function() {
 						self.$ui.saving = false;
 					});
 				});
+
+				deferred.$instance = this.items[index];
 
 				return deferred;
 			},
 
 			delete: function(index) {
-				var deferred = q.defer(),
-					object = this.items[index];
+				var deferred = q.defer();
 
 				deferred.promise.then(function(data) {
 					self.$ui.saving = true;
 
-					object.$delete().then(function() {
+					deferred.$instance.$delete().then(function() {
 						self.$ui.saving = false;
 					});
 				});
+
+				deferred.$instance = this.items[index];
 
 				return deferred;
 			}

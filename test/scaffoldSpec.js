@@ -9,7 +9,12 @@ describe("scaffold", function() {
 
 	beforeEach(module("ur.model", function(modelProvider) {
 		modelProvider
-			.model("Dogs", { url: "http://api/dogs" });
+		.model("Dogs", {
+			url: "http://api/dogs",
+			defaults: {
+				breed: "Unknown"
+			}
+		});
 	}));
 
 	beforeEach(function() {
@@ -194,8 +199,19 @@ describe("scaffold", function() {
 				expect(s.create()).toBeDeferred();
 			});
 
+			it("should hang the model instance from the deferred", function() {
+				var dfd = s.create();
+
+				expect(angular.isObject(dfd.$instance)).toBe(true);
+				expect(dfd.$instance.breed).toEqual("Unknown");
+			});
+
 			it("should create a new object when the deferred is resolved", function() {
-				s.create().resolve(mocks.one);
+				var dfd = s.create();
+
+				angular.extend(dfd.$instance, mocks.one);
+
+				dfd.resolve();
 
 				http.expectPOST("http://api/dogs", mocks.one).respond(mocks.one);
 				http.flush();
@@ -204,9 +220,12 @@ describe("scaffold", function() {
 			it("should set the saving ui state", inject(function($rootScope) {
 				http.whenPOST("http://api/dogs", mocks.one).respond(mocks.one);
 
+				var dfd = s.create();
 				expect(s.$ui.saving).toBe(false);
 
-				s.create().resolve(mocks.one);
+				angular.extend(dfd.$instance, mocks.one);
+				dfd.resolve();
+
 				$rootScope.$digest();
 
 				expect(s.$ui.saving).toBe(true);
@@ -231,29 +250,39 @@ describe("scaffold", function() {
 				expect(s.edit(0)).toBeDeferred();
 			});
 
-			it("should update the object when the deferred is resolved", function() {
-				var deferred = s.edit(0);
+			it("should hang the model instance from the deferred", function() {
+				var dfd = s.edit(0);
 
-				var data = angular.extend(angular.copy(mocks.one), {
+				expect(angular.isObject(dfd.$instance)).toBe(true);
+				expect(dfd.$instance.breed).toEqual("jack russel");
+			});
+
+			it("should update the object when the deferred is resolved", function() {
+				var dfd = s.edit(0);
+
+				angular.extend(dfd.$instance, {
 					name: "Digby"
 				});
 
-				deferred.resolve(data);
+				dfd.resolve();
 
-				http.expectPATCH("http://api/dogs/jerry", data).respond(data);
+				http.expectPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
 				http.flush();
 			});
 
 			it("should set the saving ui state", inject(function($rootScope) {
-				http.whenPATCH("http://api/dogs/jerry", data).respond(data);
-
-				var data = angular.extend(angular.copy(mocks.one), {
-					name: "Digby"
-				});
+				var dfd = s.edit(0);
 
 				expect(s.$ui.saving).toBe(false);
 
-				s.edit(0).resolve(data);
+				angular.extend(dfd.$instance, {
+					name: "Digby"
+				});
+
+				http.whenPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
+
+				dfd.resolve();
+
 				$rootScope.$digest();
 
 				expect(s.$ui.saving).toBe(true);
@@ -277,10 +306,15 @@ describe("scaffold", function() {
 				expect(s.delete(0)).toBeDeferred();
 			});
 
-			it("should delete the object when the deferred is resolved", function() {
-				var deferred = s.delete(0);
+			it("should hang the model instance from the deferred", function() {
+				var dfd = s.delete(0);
 
-				deferred.resolve();
+				expect(angular.isObject(dfd.$instance)).toBe(true);
+				expect(dfd.$instance.breed).toEqual("jack russel");
+			});
+
+			it("should delete the object when the deferred is resolved", function() {
+				s.delete(0).resolve();
 
 				http.expectDELETE("http://api/dogs/jerry").respond(204);
 				http.flush();
