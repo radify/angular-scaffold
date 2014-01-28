@@ -11,6 +11,7 @@ angular.module('ur.scaffold', ['ur.model'])
 			config = angular.extend({}, {
 				model: options.model,
 				query: options.query || {},
+				callback: options.callback
 			}),
 			paginate = {
 				size: 10,
@@ -108,7 +109,13 @@ angular.module('ur.scaffold', ['ur.model'])
 					self.$ui.loading = false;
 
 					self.pages = getPages(promise.$response.headers());
+
+					return data;
 				});
+
+				if (angular.isFunction(config.callback)) {
+					promise.then(config.callback);
+				}
 
 				return this;
 			},

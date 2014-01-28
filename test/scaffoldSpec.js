@@ -122,6 +122,23 @@ describe("scaffold", function() {
 
 				expect(s.$ui.loading).toBe(false);
 			});
+
+			// @todo: use a promise instead? then how do we chain?
+			it("should invoke an optional callback after refresh", function() {
+				var fn = jasmine.createSpy('post-refresh callback');
+
+				var s = scaffold("Dogs", {
+					callback: fn
+				});
+
+				expect(fn).not.toHaveBeenCalled();
+
+				http.whenGET("http://api/dogs").respond(mocks.all);
+				http.flush();
+
+				expect(fn).toHaveBeenCalled();
+				expect(fn.calls[0].args[0]).toEqualData(mocks.all);
+			});
 		});
 
 		describe('pagination', function() {
