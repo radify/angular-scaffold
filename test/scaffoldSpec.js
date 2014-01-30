@@ -61,6 +61,13 @@ describe("scaffold", function() {
 
 				expect(scaffold("Canines").model()).toEqual(dogs);
 			}));
+
+			it("should work without configuration", inject(function(model, scaffold) {
+				var dogs = model("Dogs");
+
+				var s = scaffold("Dogs", {});
+				expect(s.model()).toEqual(dogs);
+			}));
 		});
 	});
 
@@ -138,6 +145,17 @@ describe("scaffold", function() {
 
 				expect(fn).toHaveBeenCalled();
 				expect(fn.calls[0].args[0]).toEqualData(mocks.all);
+			});
+
+			it("should handle error responses", function() {
+				var s = scaffold("Dogs");
+				expect(s.$ui.loading).toBe(true);
+
+				http.whenGET("http://api/dogs").respond(404);
+				http.flush();
+
+				expect(s.$ui.loading).toBe(false);
+				expect(s.items).toEqual([]);
 			});
 		});
 
@@ -232,6 +250,24 @@ describe("scaffold", function() {
 
 				http.expectPOST("http://api/dogs", mocks.one).respond(mocks.one);
 				http.flush();
+
+				expect(s.items.length).toEqual(3);
+				expect(s.items[2]).toEqualData(mocks.one);
+			});
+
+			it("should not save if the save option is false", function() {
+				var dfd = s.create();
+
+				angular.extend(dfd.$instance, mocks.one);
+
+				dfd.resolve({
+					save: false
+				});
+
+				http.verifyNoOutstandingExpectation();
+
+				expect(s.items.length).toEqual(3);
+				expect(s.items[2]).toEqualData(mocks.one);
 			});
 
 			it("should set the saving ui state", inject(function($rootScope) {

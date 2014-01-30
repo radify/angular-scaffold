@@ -106,11 +106,13 @@ angular.module('ur.scaffold', ['ur.model'])
 
 				promise.then(function(data) {
 					self.items = data;
-					self.$ui.loading = false;
-
 					self.pages = getPages(promise.$response.headers());
 
 					return data;
+				}).catch(function() {
+					self.items = [];
+				}).finally(function() {
+					self.$ui.loading = false;
 				});
 
 				if (angular.isFunction(config.callback)) {
@@ -121,14 +123,27 @@ angular.module('ur.scaffold', ['ur.model'])
 			},
 
 			create: function() {
-				var deferred = q.defer();
+				var deferred = q.defer(),
 
-				deferred.promise.then(function(data) {
+					defaults = {
+						save: true
+					},
+
+					saved = function() {
+						self.items.push(deferred.$instance);
+						self.$ui.saving = false;
+					};
+
+				deferred.promise.then(function(options) {
 					self.$ui.saving = true;
 
-					deferred.$instance.$save().then(function() {
-						self.$ui.saving = false;
-					});
+					options = angular.extend({}, defaults, options);
+
+					if (options.save === false) {
+						return saved();
+					}
+
+					deferred.$instance.$save().then(saved);
 				});
 
 				deferred.$instance = config.model.create();
