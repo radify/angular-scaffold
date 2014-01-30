@@ -303,11 +303,14 @@ describe("scaffold", function() {
 				expect(s.edit(0)).toBeDeferred();
 			});
 
-			it("should hang the model instance from the deferred", function() {
+			it("should hang a copy of the model instance from the deferred", function() {
 				var dfd = s.edit(0);
 
 				expect(angular.isObject(dfd.$instance)).toBe(true);
 				expect(dfd.$instance.breed).toEqual("jack russel");
+
+				dfd.$instance.breed = "boxer";
+				expect(s.items[0].breed).toEqual("jack russel");
 			});
 
 			it("should update the object when the deferred is resolved", function() {
@@ -321,7 +324,26 @@ describe("scaffold", function() {
 
 				http.expectPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
 				http.flush();
+
+				expect(s.items[0].name).toEqual("Digby");
 			});
+
+			it("should not update if the save option is false", function() {
+				var dfd = s.edit(0);
+
+				angular.extend(dfd.$instance, {
+					name: "Digby"
+				});
+
+				dfd.resolve({
+					save: false
+				});
+
+				http.verifyNoOutstandingExpectation();
+
+				expect(s.items[0].name).toEqual("Digby");
+			});
+
 
 			it("should set the saving ui state", inject(function($rootScope) {
 				var dfd = s.edit(0);

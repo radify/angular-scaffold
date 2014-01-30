@@ -152,17 +152,30 @@ angular.module('ur.scaffold', ['ur.model'])
 			},
 
 			edit: function(index) {
-				var deferred = q.defer();
+				var deferred = q.defer(),
 
-				deferred.promise.then(function(data) {
+					defaults = {
+						save: true
+					},
+
+					saved = function() {
+						self.items[index] = deferred.$instance;
+						self.$ui.saving = false;
+					};
+
+				deferred.promise.then(function(options) {
 					self.$ui.saving = true;
 
-					deferred.$instance.$save().then(function() {
-						self.$ui.saving = false;
-					});
+					options = angular.extend({}, defaults, options);
+
+					if (options.save === false) {
+						return saved();
+					}
+
+					deferred.$instance.$save().then(saved);
 				});
 
-				deferred.$instance = this.items[index];
+				deferred.$instance = angular.copy(this.items[index]);
 
 				return deferred;
 			},
