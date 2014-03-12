@@ -46,25 +46,21 @@ angular.module('ur.scaffold', ['ur.model'])
 				return [];
 			}
 
-			var regex = /^resources \d+-\d+\/(\d+)$/,
+			var regex = /^resources \d+-\d+\/(\d+|\*)$/,
 				matches = headers['content-range'].match(regex),
 
-				total = matches[1],
+				total = matches[1];
 
-				pages = Math.ceil(total / config.paginate.size),
-
-				result = [];
-
-			for (var i = 0; i < pages; i++) {
-				result.push(i + 1);
+			if (total === '*') {
+				return null;
 			}
 
-			return result;
+            return Math.ceil(total / config.paginate.size);
 		}
 
 		angular.extend(this, {
 
-			pages: [],
+			pages: null,
 
 			$ui: {
 				loading: false,

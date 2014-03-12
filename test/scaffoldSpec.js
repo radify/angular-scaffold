@@ -188,7 +188,20 @@ describe("scaffold", function() {
 				});
 				http.flush();
 
-				expect(s.pages).toEqual([1, 2, 3, 4]);
+				expect(s.pages).toEqual(4);
+			});
+
+			it("should handle unknown totals", function() {
+				var s = scaffold("Dogs", {
+					paginate: true
+				});
+
+				http.whenGET("http://api/dogs").respond(mocks.boxers, {
+					'Content-Range': "resources 0-9/*"
+				});
+				http.flush();
+
+				expect(s.pages).toEqual(null);
 			});
 
 			it("should GET a given page", function() {
