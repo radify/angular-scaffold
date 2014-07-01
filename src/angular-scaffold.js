@@ -9,7 +9,7 @@ angular.module('ur.scaffold', ['ur.model'])
 	function ScaffoldClass(options) {
 		var self = this,
 			config = angular.extend({ query: {} }, options),
-			paginate = { size: 10, page: 1 },
+			paginate = { size: 10, page: 1, strategy: 'paged' },
 			total = 0;
 
 		if (angular.isObject(options.paginate)) {
@@ -89,6 +89,10 @@ angular.module('ur.scaffold', ['ur.model'])
 			page: function(page) {
 				config.paginate.page = page;
 
+				if (config.paginate.strategy === 'infinite') {
+					return this.refresh({append: true});
+				}
+
 				return this.refresh();
 			},
 
@@ -96,14 +100,24 @@ angular.module('ur.scaffold', ['ur.model'])
 				return total;
 			},
 
-			refresh: function() {
+			refresh: function(options) {
+				options = options || {
+					append: false
+				};
+
 				this.$ui.loading = true;
 
 				var promise = config.model.all(config.query, paginateHeaders());
 
 				var success = function(data) {
-					self.items = data;
 					self.pages = getPages(promise.$response.headers());
+
+					if (options.append === true) {
+						self.items = self.items.concat(data);
+						return data;
+					}
+
+					self.items = data;
 
 					return data;
 				};

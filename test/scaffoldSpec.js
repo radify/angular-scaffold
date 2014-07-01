@@ -178,7 +178,7 @@ describe("scaffold", function() {
 				http.flush();
 			});
 
-			it("should return an array of pages", function() {
+			it("should return a count of pages", function() {
 				var s = scaffold("Dogs", {
 					paginate: true
 				});
@@ -246,6 +246,40 @@ describe("scaffold", function() {
 					.respond(mocks.all);
 
 				http.flush();
+			});
+
+			it("should default to 'paged' strategy", function() {
+				var s = scaffold("Dogs", {
+					paginate: { size: 1 }
+				});
+
+				http.whenGET("http://api/dogs").respond([mocks.all[0]]);
+				http.flush();
+
+				expect(s.items).toEqualData([mocks.all[0]]);
+				s.page(1);
+
+				http.expectGET("http://api/dogs").respond([mocks.all[1]]);
+				http.flush();
+
+				expect(s.items).toEqualData([mocks.all[1]]);
+			});
+
+			it("should support 'infinite' strategy", function() {
+				var s = scaffold("Dogs", {
+					paginate: { size: 1, strategy: 'infinite' }
+				});
+
+				http.whenGET("http://api/dogs").respond([mocks.all[0]]);
+				http.flush();
+
+				expect(s.items).toEqualData([mocks.all[0]]);
+				s.page(1);
+
+				http.expectGET("http://api/dogs").respond([mocks.all[1]]);
+				http.flush();
+
+				expect(s.items).toEqualData(mocks.all);
 			});
 		});
 
