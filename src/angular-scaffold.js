@@ -79,8 +79,8 @@ angular.module('ur.scaffold', ['ur.model'])
 			query: function(query, page) {
 				config.query = query;
 
-				if (config.paginate) {
-					return this.page(page || 1);
+				if (page) {
+					return this.page(page);
 				}
 
 				return this.refresh();
