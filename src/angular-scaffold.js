@@ -8,15 +8,9 @@ angular.module('ur.scaffold', ['ur.model'])
 
 	function ScaffoldClass(options) {
 		var self = this,
-			config = angular.extend({}, {
-				model: options.model,
-				query: options.query || {},
-				callback: options.callback
-			}),
-			paginate = {
-				size: 10,
-				page: 1
-			};
+			config = angular.extend({ query: {} }, options),
+			paginate = { size: 10, page: 1 },
+			total = 0;
 
 		if (angular.isObject(options.paginate)) {
 			config.paginate = angular.extend({}, paginate, options.paginate);
@@ -42,19 +36,18 @@ angular.module('ur.scaffold', ['ur.model'])
 		}
 
 		function getPages(headers) {
-			if(!headers['content-range']) {
+			if(!config.paginate || !headers['content-range']) {
 				return [];
 			}
 
 			var regex = /^resources \d+-\d+\/(\d+|\*)$/,
-				matches = headers['content-range'].match(regex),
+				matches = headers['content-range'].match(regex);
 
-				total = matches[1];
-
-			if (total === '*') {
+			if (matches === null || angular.isUndefined(matches[1]) || matches[1] === '*') {
 				return null;
 			}
 
+			total = matches[1];
             return Math.ceil(total / config.paginate.size);
 		}
 
@@ -83,8 +76,12 @@ angular.module('ur.scaffold', ['ur.model'])
 				return config.model;
 			},
 
-			query: function(query) {
+			query: function(query, page) {
 				config.query = query;
+
+				if (config.paginate) {
+					return this.page(page || 1);
+				}
 
 				return this.refresh();
 			},
@@ -93,6 +90,10 @@ angular.module('ur.scaffold', ['ur.model'])
 				config.paginate.page = page;
 
 				return this.refresh();
+			},
+
+			total: function() {
+				return total;
 			},
 
 			refresh: function() {

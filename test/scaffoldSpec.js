@@ -232,6 +232,21 @@ describe("scaffold", function() {
 
 				http.flush();
 			});
+
+			it("should allow querying with page", function() {
+				var s = scaffold("Dogs", {
+					paginate: true
+				});
+
+				http.whenGET("http://api/dogs").respond(mocks.boxers);
+				http.flush();
+
+				s.query({breed: 'boxers'}, 4);
+				http.expectGET("http://api/dogs?breed=boxers", headerIncludes('Range', "resources=30-39"))
+					.respond(mocks.all);
+
+				http.flush();
+			});
 		});
 
 		describe("create", function() {
