@@ -112,17 +112,15 @@ angular.module('ur.scaffold', ['ur.model'])
 					self.items = [];
 				};
 
-				var chain;
+				var cleanup = function() {
+					self.$ui.loading = false;
+				};
 
 				if (angular.version.minor > 1) {
-					chain = promise.then(success).catch(error);
+					promise.then(success).catch(error).finally(cleanup);
 				} else {
-					chain = promise.then(success, error);
+					promise.then(success, error).always(cleanup);
 				}
-
-				chain.finally(function() {
-					self.$ui.loading = false;
-				});
 
 				if (angular.isFunction(config.callback)) {
 					promise.then(config.callback);
