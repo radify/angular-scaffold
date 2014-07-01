@@ -100,14 +100,26 @@ angular.module('ur.scaffold', ['ur.model'])
 
 				var promise = config.model.all(config.query, paginateHeaders());
 
-				promise.then(function(data) {
+				var success = function(data) {
 					self.items = data;
 					self.pages = getPages(promise.$response.headers());
 
 					return data;
-				}).catch(function() {
+				};
+
+				var error = function(data) {
 					self.items = [];
-				}).finally(function() {
+				};
+
+				var chain;
+
+				if (angular.version.minor > 1) {
+					chain = promise.then(success).catch(error);
+				} else {
+					chain = promise.then(success, error);
+				}
+
+				chain.finally(function() {
 					self.$ui.loading = false;
 				});
 
