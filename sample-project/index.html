@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>Sample Angular Scaffold project</title>
+
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="tmp/angular-model.js"></script>
+    <script src="tmp/angular-scaffold.js"></script>
+
+    <!-- Define where to get the studios from. Will default to /studios if omitted. -->
+    <link rel="resource" name="Studios" href="/api/studios">
+</head>
+<body>
+
+<div ng-controller="StudiosController">
+    <h1>Studios</h1>
+    <ul>
+        <li ng-repeat="item in studios.items track by item._id">
+            {{ item.name }} <button ng-click="$ui.delete($index)">Delete</button>
+        </li>
+    </ul>
+
+    <form>
+        New studio
+        <input ng-model="newStudio._id" placeholder="id">
+        <input ng-model="newStudio.name" placeholder="name">
+        <button ng-click="$ui.save()">Save</button>
+    </form>
+</div>
+
+
+<script>
+(function() {
+    'use strict';
+
+    // Define a namespace for myApp and state dependencies
+    angular.module('myApp', ['ur.model', 'ur.scaffold'])
+
+    // configure an angular-model instance that we can scaffold
+    .config(function(modelProvider) {
+        modelProvider.model('Studios', {});
+    })
+
+    // define a controller which uses the scaffold
+    .controller('StudiosController', function($scope, scaffold, model) {
+        angular.extend($scope, {
+
+            // a blank studio used for adding new studios to the scaffold
+            newStudio: model('Studios').create({}),
+
+            // the scaffolded object
+            studios: scaffold('Studios', {}),
+
+            // User interface functions to manipulate the studios scaffold
+            $ui: {
+                delete: function(index) {
+                    $scope.studios.items[index].$delete().then(function() {
+                        return $scope.studios.items.splice(index, 1);
+                    });
+                },
+                save: function() {
+                    $scope.newStudio.$save().then(function() {
+                        // refresh the scaffold
+                        $scope.studios.refresh();
+                        $scope.newStudio = model('Studios').create({});
+                    });
+                }
+            }
+        });
+    });
+})();
+</script>
+
+</body>
+</html>

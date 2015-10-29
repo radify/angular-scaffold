@@ -1,0 +1,8 @@
+{
+  "name": "angular-scaffold-sample-project",
+  "devDependencies": {
+    "angular": "~1.3.0",
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3"
+  }
+}
