@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 						'src/*.js',
 						'test/*.js'
 					],
-					background: true
+					singleRun: true
 				}
 			}
 		},
@@ -27,8 +27,7 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.registerTask('dev', [
-		'karma:unit:start',
-		'watch'
+	grunt.registerTask('default', [
+		'karma:unit:start'
 	]);
 };

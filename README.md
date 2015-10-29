@@ -12,6 +12,21 @@ Dependencies
 * [AngularJS](https://angularjs.org/)
 * [Angular Model](https://github.com/radify/angular-model)
 
+Running unit tests
+--
+
+Install the test runner with npm:
+
+```bash
+npm install
+```
+
+You can then run the tests with Grunt:
+
+```bash
+grunt
+```
+
 API requirements
 --
 
