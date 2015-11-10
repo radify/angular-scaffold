@@ -7,23 +7,25 @@
     <script src="tmp/angular-model.js"></script>
     <script src="tmp/angular-scaffold.js"></script>
 
-    <!-- Define where to get the studios from. Will default to /studios if omitted. -->
-    <link rel="resource" name="Studios" href="/api/studios">
+    <!-- Define where to get the posts from. Will default to /posts if omitted. -->
+    <link rel="resource" name="posts" href="/api/posts">
 </head>
 <body>
 
-<div ng-controller="StudiosController">
-    <h1>Studios</h1>
+<div ng-controller="postsController">
+    <h1>posts</h1>
     <ul>
-        <li ng-repeat="item in studios.items track by item._id">
-            {{ item.name }} <button ng-click="$ui.delete($index)">Delete</button>
+        <li ng-repeat="item in posts.items track by item._id">
+            {{ item.name }} <button ng-click="$ui.show($index)">Show</button> <button ng-click="$ui.delete($index)">Delete</button>
+            <div ng-show="$ui.showing == $index">{{ item.body }}</div>
         </li>
     </ul>
 
     <form>
-        New studio
-        <input ng-model="newStudio._id" placeholder="id">
-        <input ng-model="newStudio.name" placeholder="name">
+        New post
+        <input ng-model="newPost._id" placeholder="id">
+        <input ng-model="newPost.name" placeholder="name">
+        <input ng-model="newPost.body" placeholder="body text">
         <button ng-click="$ui.save()">Save</button>
     </form>
 </div>
@@ -37,31 +39,40 @@
 
     // configure an angular-model instance that we can scaffold
     .config(function(modelProvider) {
-        modelProvider.model('Studios', {});
+        modelProvider.model('posts', {});
     })
 
     // define a controller which uses the scaffold
-    .controller('StudiosController', function($scope, scaffold, model) {
+    .controller('postsController', function($scope, scaffold, model) {
         angular.extend($scope, {
 
-            // a blank studio used for adding new studios to the scaffold
-            newStudio: model('Studios').create({}),
+            // a blank post used for adding new posts to the scaffold
+            newPost: model('posts').create({}),
 
             // the scaffolded object
-            studios: scaffold('Studios', {}),
+            posts: scaffold('posts', {}),
 
-            // User interface functions to manipulate the studios scaffold
+            // User interface functions to manipulate the posts scaffold
             $ui: {
+                showing: -1,
+                show: function(index) {
+                    $scope.$ui.showing = index;
+                },
+                resetShowing: function() {
+                    $scope.$ui.showing = -1;
+                },
                 delete: function(index) {
-                    $scope.studios.items[index].$delete().then(function() {
-                        return $scope.studios.items.splice(index, 1);
+                    $scope.$ui.resetShowing();
+                    $scope.posts.items[index].$delete().then(function() {
+                        return $scope.posts.items.splice(index, 1);
                     });
                 },
                 save: function() {
-                    $scope.newStudio.$save().then(function() {
+                    $scope.$ui.resetShowing();
+                    $scope.newPost.$save().then(function() {
                         // refresh the scaffold
-                        $scope.studios.refresh();
-                        $scope.newStudio = model('Studios').create({});
+                        $scope.posts.refresh();
+                        $scope.newPost = model('posts').create({});
                     });
                 }
             }

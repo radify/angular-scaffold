@@ -40,10 +40,11 @@ Your API must:
 [
     {
         "$links": {
-            "self": "/api/studios/studioa"
+            "self": "/api/posts/postaa"
         },
-        "_id":"studioa",
-        "name":"Studio A"
+        "_id":"posta",
+        "name":"Post A",
+        "body":"Some content for Post A"
     }
 ]
 ```
@@ -71,9 +72,9 @@ angular.module('myApp', [
 Example controller using Angular Scaffold
 
 ```javascript
-.controller('StudiosController', function($scope, scaffold) {
+.controller('PostsController', function($scope, scaffold) {
 	angular.extend($scope, {
-		studios: scaffold('Studios', {})
+		posts: scaffold('Posts', {})
 	});
 })
 ```
@@ -91,7 +92,7 @@ npm install
 node server.js
 ```
 
-You can then browse to http://localhost:4730/ and add/remove Studio object from a list. angular-scaffold takes care of talking to the API for you.
+You can then browse to http://localhost:4730/ and add/remove Post objects from a list. angular-scaffold takes care of talking to the API for you.
 
 Pagination
 --

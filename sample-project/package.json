@@ -1,5 +1,12 @@
 {
   "name": "angular-scaffold-sample-project",
+  "description":"Sample project to illustrate the usage of angular-scaffold",
+  "homepage": "https://github.com/radify/angular-scaffold/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/radify/angular-scaffold.git"
+  },
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "angular": "~1.3.0",
     "body-parser": "^1.14.1",
