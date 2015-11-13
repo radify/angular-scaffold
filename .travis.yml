@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - "0.11"
+  - "0.12"
+  - "4.0"
+  - "4.1"
+  - "4.2"
+
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - npm install
+
+script:
+  - gulp
+
+addons:
+  code_climate:
+    repo_token:
+      secure: "mTBue2hOpHjHgvgLqAkrQ56FMKAF+N2ux/Dt8uVaNHA3nSBJE8+M1TmKcWZtZQY4owZzOb5hNFOsyGfICjrJN462Y1gYewm5Vtful2LSbQa9wl7xFdQPce7CEmHJ47dVwOMf7vjxsatM6ThuM70ofo4rfpiusrJ4UbH2EafopbQ="

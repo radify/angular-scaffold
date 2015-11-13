@@ -21,13 +21,24 @@ Install the test runner with npm:
 npm install
 ```
 
-You can then run the tests with Grunt:
+You can then run the tests with Gulp:
 
 ```bash
-grunt
+gulp
 ```
 
-API requirements
+You can run coverage with:
+
+```bash
+gulp coverage
+```
+
+angular-scaffold API docs
+--
+
+See [/docs/api.md](/docs/api.md) in this project for detailed documentation of all angular-scaffold's functions.
+
+Supporting angular-scaffold in your API
 --
 
 Your API must:
@@ -71,7 +82,7 @@ angular.module('myApp', [
 ]);
 ```
 
-Example controller using Angular Scaffold
+Example controller using Angular Scaffold:
 
 ```javascript
 .controller('PostsController', function($scope, scaffold) {
