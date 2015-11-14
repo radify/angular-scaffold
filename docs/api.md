@@ -25,123 +25,6 @@ Dependencies
 Methods
 -------
 
-### create()
-
-Creates a new object when the deferred promise is resolved
-
-##### Returns
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="">object</a></td>
-<td align="left"><div class="create-page">
-<p>Deferred promise</p>
-</div></td>
-</tr>
-</tbody>
-</table>
-
-### delete(index)
-
-Find `index` and delete it from the API, then remove it from the collection
-
-##### Parameters
-
-<table>
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Param</th>
-<th align="left">Type</th>
-<th align="left">Details</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">index</td>
-<td align="left"><a href="">number</a><a href="">object</a></td>
-<td align="left"><div class="delete-page">
-<p>Either the index of the item in the collection to remove, or the object itself, which will be searched for in the collection</p>
-</div></td>
-</tr>
-</tbody>
-</table>
-
-##### Returns
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="">object</a></td>
-<td align="left"><div class="delete-page">
-<p>Promise</p>
-</div></td>
-</tr>
-</tbody>
-</table>
-
-### edit(index)
-
-Find `index` and set it up for editing.
-
-Updates the object when the deferred promise is resolved
-
-##### Parameters
-
-<table>
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Param</th>
-<th align="left">Type</th>
-<th align="left">Details</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">index</td>
-<td align="left"><a href="">number</a><a href="">object</a></td>
-<td align="left"><div class="edit-page">
-<p>Either the index of the item in the collection to edit, or the object itself, which will be searched for in the collection</p>
-</div></td>
-</tr>
-</tbody>
-</table>
-
-##### Returns
-
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="">object</a></td>
-<td align="left"><div class="edit-page">
-<p>Deferred promise</p>
-</div></td>
-</tr>
-</tbody>
-</table>
-
 ### $config()
 
 Get the configuration for this angular-scaffold instance
@@ -183,6 +66,157 @@ Initialise this scaffold
 </tr>
 </tbody>
 </table>
+
+### create()
+
+Creates a new object when the deferred promise is resolved
+
+##### Returns
+
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><a href="">object</a></td>
+<td align="left"><div class="ur-scaffold-page ur-scaffold-create-page">
+<p>Deferred promise</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+#### Specs for ur.scaffold:create
+
+- should return a deferred
+
+- should hang the model instance from the deferred
+
+- should create a new object when the deferred is resolved
+
+- should not save if the save option is false
+
+- should set the saving ui state
+
+### delete(index)
+
+Find `index` and delete it from the API, then remove it from the collection
+
+##### Parameters
+
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Param</th>
+<th align="left">Type</th>
+<th align="left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">index</td>
+<td align="left"><a href="">number</a><a href="">object</a></td>
+<td align="left"><div class="ur-scaffold-page ur-scaffold-delete-page">
+<p>Either the index of the item in the collection to remove, or the object itself, which will be searched for in the collection</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+##### Returns
+
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><a href="">object</a></td>
+<td align="left"><div class="ur-scaffold-page ur-scaffold-delete-page">
+<p>Promise</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+#### Specs for ur.scaffold:delete
+
+- should return a deferred
+
+- should hang the model instance from the deferred
+
+- should delete the object when the deferred is resolved
+
+- should set the saving ui state
+
+### edit(index)
+
+Find `index` and set it up for editing.
+
+Updates the object when the deferred promise is resolved
+
+##### Parameters
+
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Param</th>
+<th align="left">Type</th>
+<th align="left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">index</td>
+<td align="left"><a href="">number</a><a href="">object</a></td>
+<td align="left"><div class="ur-scaffold-page ur-scaffold-edit-page">
+<p>Either the index of the item in the collection to edit, or the object itself, which will be searched for in the collection</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+##### Returns
+
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><a href="">object</a></td>
+<td align="left"><div class="ur-scaffold-page ur-scaffold-edit-page">
+<p>Deferred promise</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+
+#### Specs for ur.scaffold:edit
+
+- should return a deferred
+
+- should hang a copy of the model instance from the deferred
+
+- should update the object when the deferred is resolved
+
+- should not update if the save option is false
+
+- should set the saving ui state
 
 ### model()
 

@@ -251,7 +251,7 @@ angular.module('ur.scaffold', ['ur.model'])
 
 			/**
 			 * @ngdoc function
-			 * @name create
+			 * @name ur.scaffold:create
 			 * @methodOf ur.scaffold
 			 * @description
 			 * Creates a new object when the deferred promise is resolved
@@ -288,7 +288,7 @@ angular.module('ur.scaffold', ['ur.model'])
 
 			/**
 			 * @ngdoc function
-			 * @name edit
+			 * @name ur.scaffold:edit
 			 * @methodOf ur.scaffold
 			 * @param {(number|object)} index Either the index of the item in the collection to edit,
 			 *   or the object itself, which will be searched for in the collection
@@ -329,7 +329,7 @@ angular.module('ur.scaffold', ['ur.model'])
 
 			/**
 			 * @ngdoc function
-			 * @name delete
+			 * @name ur.scaffold:delete
 			 * @methodOf ur.scaffold
 			 * @param {(number|object)} index Either the index of the item in the collection to remove, or the object
 			 *     itself, which will be searched for in the collection

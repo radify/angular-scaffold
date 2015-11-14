@@ -1,4 +1,21 @@
-describe("scaffold", function() {
+var smartRep = {
+	map: {},
+	specStarted: function(result) {
+		var description = result.description;
+		var path = result.fullName.replace(description, '').replace(' service ', ':').replace('()', '').trim();
+		if (!smartRep.map[path]) {
+			smartRep.map[path] = [];
+		}
+		smartRep.map[path].push(description);
+	},
+	jasmineDone: function() {
+		console.log(JSON.stringify(smartRep.map, null, 2));
+	}
+};
+
+jasmine.getEnv().addReporter(smartRep);
+
+describe("ur.scaffold", function() {
 	var provider;
 
 	beforeEach(module("ur.scaffold.mocks"));
@@ -296,7 +313,7 @@ describe("scaffold", function() {
 			});
 		});
 
-		describe("create", function() {
+		describe("create()", function() {
 			var s;
 
 			beforeEach(function() {
@@ -365,7 +382,7 @@ describe("scaffold", function() {
 		});
 
 		// @todo: discuss approach to editing/deleting an item. Currently by index.
-		describe("edit", function() {
+		describe("edit()", function() {
 			var s;
 
 			beforeEach(function() {
@@ -443,7 +460,7 @@ describe("scaffold", function() {
 			}));
 		});
 
-		describe("delete", function() {
+		describe("delete()", function() {
 			var s;
 
 			beforeEach(function() {
