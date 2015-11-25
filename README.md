@@ -1,3 +1,9 @@
+[![Travis Status for radify/angular-scaffold](https://travis-ci.org/radify/angular-scaffold.svg)](https://travis-ci.org/radify/angular-scaffold)
+[![Coverage Status](https://coveralls.io/repos/radify/angular-scaffold/badge.svg?branch=master&service=github)](https://coveralls.io/github/radify/angular-scaffold?branch=master)
+[![Dependency Status](https://david-dm.org/radify/angular-scaffold.svg)](https://david-dm.org/radify/angular-scaffold)
+[![devDependency Status](https://david-dm.org/radify/angular-scaffold/dev-status.svg)](https://david-dm.org/radify/angular-scaffold#info=devDependencies)
+[![Code Climate](https://codeclimate.com/github/radify/angular-scaffold/badges/gpa.svg)](https://codeclimate.com/github/radify/angular-scaffold)
+
 Angular Scaffold
 ==
 
