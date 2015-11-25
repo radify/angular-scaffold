@@ -9,9 +9,9 @@ module.exports = function(grunt) {
 					browsers: ['PhantomJS'],
 					frameworks: ['jasmine'],
 					files: [
-						'lib/angular.js',
-						'lib/angular-mocks.js',
-						'lib/angular-model.js',
+						'node_modules/angular/angular.js',
+						'node_modules/angular-mocks/angular-mocks.js',
+						'node_modules/angular-model/src/angular-model.js',
 						'src/*.js',
 						'test/*.js'
 					],

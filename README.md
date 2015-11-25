@@ -40,7 +40,9 @@ Your API must:
 [
     {
         "$links": {
-            "self": "/api/posts/postaa"
+            "self": {
+                "href": "/api/posts/postaa"
+            }
         },
         "_id":"posta",
         "name":"Post A",

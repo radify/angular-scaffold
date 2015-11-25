@@ -3,14 +3,18 @@ angular.module('ur.scaffold.mocks', [])
 	all: [
 		{
 			$links: {
-				self: "http://api/dogs/jerry"
+				self: {
+					href: "http://api/dogs/jerry"
+				}
 			},
 			name: "Jerry",
 			breed: "jack russel"
 		},
 		{
 			$links: {
-				self: "http://api/dogs/mac"
+				self: {
+					href: "http://api/dogs/mac"
+				}
 			},
 			name: "Mac",
 			breed: "boxer"
@@ -19,7 +23,9 @@ angular.module('ur.scaffold.mocks', [])
 	boxers: [
 		{
 			$links: {
-				self: "http://api/dogs/mac"
+				self: {
+					href: "http://api/dogs/mac"
+				}
 			},
 			name: "Mac",
 			breed: "boxer"

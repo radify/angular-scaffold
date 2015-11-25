@@ -397,7 +397,7 @@ describe("scaffold", function() {
 
 				dfd.resolve();
 
-				http.expectPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
+				http.expectPATCH("http://api/dogs/jerry", {"name":"Digby"}).respond(204);
 				http.flush();
 
 				expect(s.items[0].name).toEqual("Digby");
@@ -429,7 +429,7 @@ describe("scaffold", function() {
 					name: "Digby"
 				});
 
-				http.whenPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
+				http.expectPATCH("http://api/dogs/jerry", {"name":"Digby"}).respond(204);
 
 				dfd.resolve();
 
