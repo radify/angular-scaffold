@@ -10,7 +10,7 @@ Dependencies
 --
 
 * [AngularJS](https://angularjs.org/)
-* [Angular Model](https://github.com/radify/angular-model)
+* [Angular Model](https://www.npmjs.com/package/angular-model)
 
 Running unit tests
 --
@@ -40,7 +40,9 @@ Your API must:
 [
     {
         "$links": {
-            "self": "/api/posts/postaa"
+            "self": {
+                "href": "/api/posts/postaa"
+            }
         },
         "_id":"posta",
         "name":"Post A",
@@ -125,12 +127,3 @@ return scaffold('Shares', {
   query: { to: true, order: { _id: 'desc'} }
 });
 ```
-
-TODO list
---
-
-Before going "live":
-
-* [ ] Get this and `angular-model` into npm/bower
-* [ ] Remove `sample-project/tmp/*` in favour of package managed version (as above)
-* [ ] Change `ur` namespace to `radify`
