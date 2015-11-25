@@ -33,11 +33,6 @@
       "name": "Gavin Davies",
       "email": "gavin@radify.io",
       "web": "http://radify.io"
-    },
-    {
-      "name": "Warren Seymour",
-      "email": "warren@radify.io",
-      "web": "http://radify.io"
     }
   ],
   "devDependencies": {
