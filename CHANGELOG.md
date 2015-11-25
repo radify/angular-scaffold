@@ -3,6 +3,31 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Thorough documentation
+- A sample project
+- A `Gulpfile` with various tasks
+- An `.editorconfig`
+- Travis integration
+- CodeClimate integration
+- Coveralls integration
+- `jshint`
+- A Karma config
+
+### Changed
+- Switches from bundled libraries to NPM
+- Updates `angular-scaffold.js`
+- Moves tests from `/test` to `/spec`
+- Significant `README` revision
+
+### Fixed
+- `CHANGELOG` formatting
+
+### Removed
+- `Gruntfile`
+
+### Security
+- `gulp-nsp` now runs a security audit on `package.json`
 
 ## [0.2.0] - 2015-10-29
 ### Added
