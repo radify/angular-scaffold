@@ -10,7 +10,7 @@ Dependencies
 --
 
 * [AngularJS](https://angularjs.org/)
-* [Angular Model](https://github.com/radify/angular-model)
+* [Angular Model](https://www.npmjs.com/package/angular-model)
 
 Running unit tests
 --
