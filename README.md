@@ -127,12 +127,3 @@ return scaffold('Shares', {
   query: { to: true, order: { _id: 'desc'} }
 });
 ```
-
-TODO list
---
-
-Before going "live":
-
-* [ ] Get this and `angular-model` into npm/bower
-* [ ] Remove `sample-project/tmp/*` in favour of package managed version (as above)
-* [ ] Change `ur` namespace to `radify`
