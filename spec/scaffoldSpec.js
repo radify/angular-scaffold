@@ -18,14 +18,27 @@ describe("scaffold", function() {
 	}));
 
 	beforeEach(function() {
-		this.addMatchers({
-			toEqualData: function(expected) {
-				return angular.equals(this.actual, expected);
+
+		jasmine.addMatchers({
+			toEqualData: function(util, customEqualityTesters) {
+				return {
+					compare: function(actual, expected) {
+						return {
+							pass: angular.equals(actual, expected)
+						};
+					}
+				};
 			},
-			toBeDeferred: function() {
-				return angular.isFunction(this.actual.resolve) &&
-					angular.isFunction(this.actual.reject) &&
-					angular.isFunction(this.actual.notify);
+			toBeDeferred: function(util, customEqualityTesters) {
+				return {
+					compare: function(actual, expected) {
+						return {
+							pass: angular.isFunction(actual.resolve) &&
+								angular.isFunction(actual.reject) &&
+								angular.isFunction(actual.notify)
+						}
+					}
+				};
 			}
 		});
 	});
@@ -89,7 +102,6 @@ describe("scaffold", function() {
 
 				http.expectGET("http://api/dogs").respond(mocks.all);
 				http.flush();
-
 				expect(s.items).toEqualData(mocks.all);
 			});
 
@@ -144,7 +156,8 @@ describe("scaffold", function() {
 				http.flush();
 
 				expect(fn).toHaveBeenCalled();
-				expect(fn.calls[0].args[0]).toEqualData(mocks.all);
+
+				expect(fn.calls.first().args[0]).toEqualData(mocks.all);
 			});
 
 			it("should handle error responses", function() {
@@ -384,7 +397,7 @@ describe("scaffold", function() {
 
 				dfd.resolve();
 
-				http.expectPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
+				http.expectPATCH("http://api/dogs/jerry", {"name":"Digby"}).respond(204);
 				http.flush();
 
 				expect(s.items[0].name).toEqual("Digby");
@@ -416,7 +429,7 @@ describe("scaffold", function() {
 					name: "Digby"
 				});
 
-				http.whenPATCH("http://api/dogs/jerry", dfd.$instance).respond(204);
+				http.expectPATCH("http://api/dogs/jerry", {"name":"Digby"}).respond(204);
 
 				dfd.resolve();
 

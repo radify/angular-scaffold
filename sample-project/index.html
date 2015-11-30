@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>Sample Angular Scaffold project</title>
+
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-model/src/angular-model.js"></script>
+    <script src="angular-scaffold.js"></script>
+
+    <!-- Define where to get the posts from. Will default to /posts if omitted. -->
+    <link rel="resource" name="posts" href="/api/posts">
+</head>
+<body>
+
+<div ng-controller="postsController">
+    <h1>posts</h1>
+    <ul>
+        <li ng-repeat="item in posts.items track by item._id">
+            {{ item.name }} <button ng-click="$ui.show($index)">Show</button> <button ng-click="$ui.delete($index)">Delete</button>
+            <div ng-show="$ui.showing == $index">{{ item.body }}</div>
+        </li>
+    </ul>
+
+    <form>
+        New post
+        <input ng-model="newPost._id" placeholder="id">
+        <input ng-model="newPost.name" placeholder="name">
+        <input ng-model="newPost.body" placeholder="body text">
+        <button ng-click="$ui.save()">Save</button>
+    </form>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    // Define a namespace for myApp and state dependencies
+    angular.module('myApp', ['ur.model', 'ur.scaffold'])
+
+    // configure an angular-model instance that we can scaffold
+    .config(function(modelProvider) {
+        modelProvider.model('posts', {});
+    })
+
+    // define a controller which uses the scaffold
+    .controller('postsController', function($scope, scaffold, model) {
+        angular.extend($scope, {
+
+            // a blank post used for adding new posts to the scaffold
+            newPost: model('posts').create({}),
+
+            // the scaffolded object
+            posts: scaffold('posts', {}),
+
+            // User interface functions to manipulate the posts scaffold
+            $ui: {
+                showing: -1,
+                show: function(index) {
+                    $scope.$ui.showing = index;
+                },
+                resetShowing: function() {
+                    $scope.$ui.showing = -1;
+                },
+                delete: function(index) {
+                    $scope.$ui.resetShowing();
+                    $scope.posts.items[index].$delete().then(function() {
+                        return $scope.posts.items.splice(index, 1);
+                    });
+                },
+                save: function() {
+                    $scope.$ui.resetShowing();
+                    $scope.newPost.$save().then(function() {
+                        // refresh the scaffold
+                        $scope.posts.refresh();
+                        $scope.newPost = model('posts').create({});
+                    });
+                }
+            }
+        });
+    });
+})();
+</script>
+
+</body>
+</html>
