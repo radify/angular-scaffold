@@ -4,22 +4,18 @@
 [![devDependency Status](https://david-dm.org/radify/angular-scaffold/dev-status.svg)](https://david-dm.org/radify/angular-scaffold#info=devDependencies)
 [![Code Climate](https://codeclimate.com/github/radify/angular-scaffold/badges/gpa.svg)](https://codeclimate.com/github/radify/angular-scaffold)
 
-Angular Scaffold
-==
+# Angular Scaffold
 
-Description
---
+## Simple scaffolding for AngularJS
 
-Angular Scaffold is a collection of convenience wrappers around angular-model collections.
+**Angular Scaffold** is a collection of convenience wrappers around angular-model collections.
 
-Dependencies
---
+## Dependencies
 
 * [AngularJS](https://angularjs.org/)
 * [Angular Model](https://www.npmjs.com/package/angular-model)
 
-Running unit tests
---
+## Running unit tests
 
 Install the test runner with npm:
 
@@ -39,13 +35,11 @@ You can run coverage with:
 gulp coverage
 ```
 
-angular-scaffold API docs
---
+## angular-scaffold API docs
 
 See [/docs/api.md](/docs/api.md) in this project for detailed documentation of all angular-scaffold's functions.
 
-Supporting angular-scaffold in your API
---
+## Supporting angular-scaffold in your API
 
 Your API must:
 
@@ -68,8 +62,7 @@ Your API must:
 ]
 ```
 
-Basic Usage
---
+## Basic Usage
 
 In your AngularJS application, include the JavaScript:
 
@@ -98,8 +91,7 @@ Example controller using Angular Scaffold:
 })
 ```
 
-Basic CRUD example project
---
+## Basic CRUD example project
 
 An [example application is included in this repository](/sample-project/). It has a very simple API that illustrates a basic use case for angular-scaffold.
 
@@ -113,8 +105,7 @@ node server.js
 
 You can then browse to http://localhost:4730/ and add/remove Post objects from a list. angular-scaffold takes care of talking to the API for you.
 
-Pagination
---
+## Pagination
 
 angular-scaffold can paginate your model. Your API will need to support the `Range: resources=n-n` header to take advantage of this. For example, `Range: resources=10-20` would return resources 10 through 20.
 
@@ -124,8 +115,7 @@ paginate: { size: 20, page: 1, strategy: 'paged' }
 });
 ```
 
-Querying
---
+## Querying
 
 You can pass a specific query in, which will be sent through to the API. Your API will have to know how to respond to this.
 
