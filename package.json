@@ -1,8 +1,8 @@
 {
   "name": "angular-scaffold",
-  "description:": "Angular Scaffold is a collection of convenience wrappers around angular-model collections.",
+  "description": "Angular Scaffold is a collection of convenience wrappers around angular-model collections.",
   "license": "BSD-3-Clause",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/radify/angular-scaffold/",
   "repository": {
     "type": "git",
