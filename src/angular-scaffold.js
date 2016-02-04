@@ -202,7 +202,8 @@ angular.module('ur.scaffold', ['ur.model'])
 			 * @methodOf ur.scaffold
 			 * @description
 			 * Go to the API and refresh
-			 * @param {object=} options Query options to pass to the underlying angular-model `all` query
+			 * @param {object=} options Query options to pass to the underlying angular-model `all` query.
+       * Includes `callback`, which can be a callback function for when the refresh completes.
 			 *
 			 * @returns {object} Returns this object, supporting method chaining
 			 */
@@ -244,6 +245,10 @@ angular.module('ur.scaffold', ['ur.model'])
 
 				if (angular.isFunction(config.callback)) {
 					promise.then(config.callback);
+				}
+
+				if (angular.isFunction(options.callback)) {
+					promise.then(options.callback);
 				}
 
 				return this;
