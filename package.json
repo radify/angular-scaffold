@@ -36,7 +36,7 @@
     }
   ],
   "devDependencies": {
-    "angular": "~1.2.29",
+    "angular": "~1.7.9",
     "angular-mocks": "~1.2.29",
     "angular-model": "^0.6.0",
     "gulp": "^3.9.0",
